@@ -18,6 +18,19 @@ def cdfpdf(df_col):
 
 
 def na_agg(df, cols=[], missing_only=False, plot=True):
+    """[summary]
+    
+    Arguments:
+        df {pandas dataframe} 
+    
+    Keyword Arguments:
+        cols {list} -- [description] (default: {[]})
+        missing_only {bool} -- [description] (default: {False})
+        plot {bool} -- [description] (default: {True})
+    
+    Returns:
+        pandas dataframe -- showing each column, its missing value counts and missing value percentage
+    """
     if len(cols) == 0:
         cols = df.columns
     # Capture the necessary data
