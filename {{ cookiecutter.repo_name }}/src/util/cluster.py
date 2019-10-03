@@ -10,7 +10,6 @@ from nltk.stem import PorterStemmer
 from nltk.corpus import stopwords
 from sklearn.cluster import KMeans
 from sklearn.feature_extraction.text import TfidfVectorizer
-from pprint import pprint
 from collections import Counter
 
 
@@ -60,18 +59,9 @@ def process_text(text, stem=False):
     return tokens
 
 
-# to do, make vectorize a parameter (well then I may as well rebuild the whole pipeline
-def cluster_texts(texts, clusters=3):
-    """ Transform texts to Tf-Idf coordinates and cluster texts using K-Means """
-    vectorizer = TfidfVectorizer(tokenizer=process_text,
-                                 stop_words=stopwords.words('english'),
-                                 max_df=0.1,
-                                 min_df=0.005,
-                                 lowercase=True)
-
-    tfidf_model = vectorizer.fit_transform(texts)
-    km_model = KMeans(n_clusters=clusters)
-    km_model.fit(tfidf_model)
+def cluster(mat, num_clusters):
+    km_model = KMeans(n_clusters=num_clusters)
+    km_model.fit(mat)
 
     clustering = collections.defaultdict(list)
 
@@ -81,9 +71,24 @@ def cluster_texts(texts, clusters=3):
     return clustering
 
 
+# to do, make vectorize a parameter (well then I may as well rebuild the whole pipeline
+def cluster_texts(texts, vectorizer=None, num_clusters=3):
+    """ Transform texts to Tf-Idf coordinates and cluster texts using K-Means """
+    if not vectorizer:
+        vectorizer = TfidfVectorizer(tokenizer=process_text,
+                                     stop_words=stopwords.words('english'),
+                                     max_df=0.1,
+                                     min_df=0.005,
+                                     lowercase=True)
+
+    tfidf_model = vectorizer.fit_transform(texts)
+    return cluster(tfidf_model, num_clusters)
+
+
 def get_cluster_words(cluster_paths, n):
     file_paths = cluster_paths.apply(path_tokenize2).to_list()
     path_token_counter = Counter()
     for path in file_paths:
         path_token_counter.update(path)
     return path_token_counter.most_common(n)
+

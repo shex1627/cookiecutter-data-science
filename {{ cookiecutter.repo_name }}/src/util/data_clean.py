@@ -4,12 +4,14 @@
 import pandas as pd
 import numpy as np
 
+
 def check_na(df, norm=False):
     """quick check the missing value stats for each column in a df."""
     if norm:
         return df.isna().sum()/df.shape[0]
     else:
         return df.isna().sum()
+
 
 def make_check_type(dtype):
     """check if an element can be converted the desire dtype"""
